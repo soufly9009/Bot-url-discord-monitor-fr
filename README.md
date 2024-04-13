@@ -1,5 +1,6 @@
 # Infratruture bot verification
 
+Pour soutenir le projet merci de ⭐ le projet !
 ## A quoi serre le bot ?
 - Le bot est un moniteur qui a une fonction de calcluer le nombre de lattence entre le nom de domaine est le serveur en lui meme
 - Le bot compose un URL multi calcule il peut pour calculer plusieur uRL en meme temps il peuvent aussi vous dire si les url sont en ligne ou pas
