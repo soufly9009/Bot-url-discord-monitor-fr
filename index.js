@@ -1,9 +1,6 @@
 const axios = require("axios");
 const { Client, GatewayIntentBits, EmbedBuilder } = require("discord.js");
-const CpuStat = require("cpu-stat");
-const moment = require("moment");
-const cpuStat = require("cpu-stat");
-require("moment-duration-format");
+
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
