@@ -10,7 +10,7 @@ const client = new Client({
   ],
 });
 
-const domains = ["https://namethedomaine/", "https://mondedomaine/pma"]; // Mettez ici vos nom de domaine est sous-domaine
+const domains = ["https://namethedomaine/", "https://mondedomaine/"]; // Mettez ici vos nom de domaine est sous-domaine
 
 client.once("ready", () => {
   console.log("Le bot est en ligne!");
