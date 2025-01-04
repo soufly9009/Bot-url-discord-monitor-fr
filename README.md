@@ -15,16 +15,13 @@ Pour soutenir le projet merci de ⭐ le projet !
 
 [DISCORD](https://discord.gg/z3auwsQrUF)
 
-# Nos Partenaire futures
-Nos futurs partenaire & la ou je vais travaille pour eux peut etre est in service en ligne ou vous pourrez trouver des offre revendeur a 10 euro est performent 
-
-voici les lien des url : 
-[DISCORD support](https://discord.gg/4teNzBabQz)
-[site web](https://keo-cloud.fr/)
+# notre hebergeur gratuit
+[DISCORD support]([https://discord.gg/4teNzBabQz](https://discord.gg/emm9Ydegeq))
+[site web](https://uniobot.fr/)
 
 
 contact discord pseudo: 
-soufl.y
+soufly_dev
 
 
 Cree est mise a jours le 13/04/24
