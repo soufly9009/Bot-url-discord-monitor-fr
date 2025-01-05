@@ -34,11 +34,17 @@ complement:
 voici la ligne a modifié est à config
 
 ```
-- Ligne 13 === URL EST NOM DE DOMAINE VALIDE
-- Ligne 49 === URL DE RAMDOM 1
-- Ligne 50 ===  IMAGE DU BOT EN PNG JPG
-- Ligne 53 === CHANNEL OU MISE A EMBED
-- Ligne 64 === LIEN EST TOKEN DU BOT
+{
+  "token": "TOKEN-HERE",
+  "channelID": "YOUR-CHANNEL_ID",
+  "refreshInterval": 60000,
+  "domaine": [
+    "https://info.exemple.fr",
+    "https://info.autre-exemple.fr",
+    "https://info.super-exemple.fr"
+  ],
+  "embedURL": "https://your-embed-url.com"
+}
 ```
 lien clone git
 ```
