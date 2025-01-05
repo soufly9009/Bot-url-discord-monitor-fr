@@ -1,0 +1,11 @@
+{
+  "token": "TOKEN-HERE",
+  "channelID": "YOUR-CHANNEL_ID",
+  "refreshInterval": 60000,
+  "domaine": [
+    "https://info.exemple.fr",
+    "https://info.autre-exemple.fr",
+    "https://info.super-exemple.fr"
+  ],
+  "embedURL": "https://your-embed-url.com"
+}
