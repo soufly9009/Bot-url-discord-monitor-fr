@@ -1,57 +1,75 @@
-# Infratruture bot verification
+# Infrastructure Bot Verification
 
 Pour soutenir le projet merci de ⭐ le projet !
-## A quoi serre le bot ?
-- Le bot est un moniteur qui a une fonction de calcluer le nombre de lattence entre le nom de domaine est le serveur en lui meme
-- Le bot compose un URL multi calcule il peut pour calculer plusieur uRL en meme temps il peuvent aussi vous dire si les url sont en ligne ou pas
 
-# Mise a jours a avenir :
+## À quoi sert le bot ?
+- Le bot est un moniteur qui calcule la latence entre le nom de domaine et le serveur lui-même.
+- Le bot peut surveiller plusieurs URL en même temps et vous dire si elles sont en ligne ou hors ligne.
+- **Nouveau :** Affichage personnalisé ("Maintenance") si le site est inaccessible (DNS, Timeout, etc.).
+- **Nouveau :** Possibilité de donner un **Nom** personnalisé à chaque service (ex: "Site Web", "Panel").
 
-- protection & status des api
-- annonce des down
-- mise a jours sur demande ....
+# Mise à jour à venir :
+- Protection & status des API
+- Annonce des down
+- Mise à jour sur demande...
 
-# LE SERVEUR DISCORD HEBERGEUR : 
+# LE SERVEUR DISCORD HÉBERGEUR : 
+[DISCORD](https://discord.gg/z3auwsQrUF)
 
+# Notre hébergeur gratuit
+[DISCORD support](https://discord.gg/emm9Ydegeq)
+[Site web](https://uniobot.fr/)
 
+Contact discord pseudo: `soufly_dev`
 
-# notre hebergeur gratuit
-[DISCORD support](https://discord.gg/AGp9UfmSQE)
-[site web](https://uniobot.fr/)
+Créé et mis à jour le 13/04/24 - Dernière mise à jour majeure le 16/12/25
 
+---
 
-contact discord pseudo: 
-soufly_dev
+## Configuration
 
+La configuration se passe dans le fichier `config.json`.
+Vous devez définir votre token, l'ID du salon, et la liste des domaines à surveiller.
 
-Cree est mise a jours le 13/04/24
+**Exemple de `config.json` :**
 
-
-
-complement: 
-# la configuration ce passe sur index.js
-
-voici la ligne a modifié est à config
-
-```
+```json
 {
-  "token": "TOKEN-HERE",
-  "channelID": "YOUR-CHANNEL_ID",
+  "token": "VOTRE-TOKEN-ICI",
+  "channelID": "ID-DU-SALON",
   "refreshInterval": 60000,
   "domaine": [
-    "https://info.exemple.fr",
-    "https://info.autre-exemple.fr",
-    "https://info.super-exemple.fr"
+    { "name": "Site Web", "url": "https://votresite.fr" },
+    { "name": "Panel", "url": "https://panel.votresite.fr" },
+    { "name": "API", "url": "https://api.votresite.fr" }
   ],
-  "embedURL": "https://your-embed-url.com"
+  "embedURL": "https://votresite.fr"
 }
 ```
-lien clone git
+
+### Champs :
+- `token` : Le token de votre bot Discord.
+- `channelID` : L'ID du salon où le message de statut sera envoyé/mis à jour.
+- `refreshInterval` : Temps en millisecondes entre chaque vérification (60000 = 1 minute).
+- `domaine` : Une liste d'objets, chacun contenant :
+    - `name` : Le nom affiché dans l'embed (ex: "Site Web").
+    - `url` : L'URL à vérifier.
+- `embedURL` : L'URL vers laquelle pointe le titre de l'embed.
+
+## Installation
+
+1. Cloner le repo :
+```bash
+git clone https://github.com/mjumelmax001/statutsURLbotdiscord.git
 ```
-https://github.com/soufly9009/Bot-url-discord-monitor-fr
+2. Installer les dépendances :
+```bash
+npm install
+```
+3. Configurer `config.json`.
+4. Lancer le bot :
+```bash
+node .
 ```
 
-Le code est en open source mais il est proteger par une LICENSE
-
-
-
+Le code est open source mais il est protégé par une LICENSE.

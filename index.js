@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { Client, GatewayIntentBits, EmbedBuilder } = require("discord.js");
+const { Client, GatewayIntentBits, EmbedBuilder, WebhookClient } = require("discord.js");
 const config = require('./config.json');
 
 const client = new Client({
@@ -17,6 +17,7 @@ client.once("ready", () => {
 });
 
 let statusMessage;
+let previousStates = {};
 
 async function checkDomains() {
     const embed = new EmbedBuilder()
@@ -24,28 +25,24 @@ async function checkDomains() {
         .setColor(0x0099ff);
 
     for (const service of config.domaine) {
+        let status = 'ONLINE';
+        let statusText = '';
+        let latency = 0;
+
         try {
             const start = Date.now();
             const response = await axios.get(service.url);
-            const ms = Date.now() - start;
-
-            embed.addFields({
-                name: service.name,
-                value: `<a:ON:1444440953195728946> || En ligne - Ping: ${ms}ms`,
-                inline: false,
-            });
+            latency = Date.now() - start;
+            statusText = `<a:ON:1444440953195728946> || En ligne - Ping: ${latency}ms`;
+            status = 'ONLINE';
         } catch (error) {
-            let statusText = `<:874346wrong:1450528836407136307> || Hors ligne - Error: ${error.message}`;
+            statusText = `<:874346wrong:1450528836407136307> || Hors ligne - Error: ${error.message}`;
+            status = 'OFFLINE';
 
             if (error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED' || error.code === 'ETIMEDOUT') {
                 statusText = `🚧 || Maintenance`;
+                status = 'MAINTENANCE';
             }
-
-            embed.addFields({
-                name: service.name,
-                value: statusText,
-                inline: false,
-            });
 
             if (error.code === 'ENOTFOUND') {
                 console.error(`DNS Error: Could not resolve ${service.url}`);
@@ -53,6 +50,47 @@ async function checkDomains() {
                 console.error(`Error checking ${service.name} (${service.url}):`, error.message);
             }
         }
+
+        embed.addFields({
+            name: service.name,
+            value: statusText,
+            inline: false,
+        });
+
+        // Alert Logic
+        if (config.enableAlerts && config.webhookURL) {
+            if (previousStates[service.url] && previousStates[service.url] !== status) {
+                const webhookClient = new WebhookClient({ url: config.webhookURL });
+
+                let alertEmbed = new EmbedBuilder();
+
+                if (status === 'OFFLINE') {
+                    alertEmbed.setTitle(`🔴 Service Down: ${service.name}`)
+                        .setDescription(`The service **${service.name}** is now OFFLINE.`)
+                        .setColor('Red')
+                        .setTimestamp();
+                } else if (status === 'MAINTENANCE') {
+                    alertEmbed.setTitle(`🚧 Service Maintenance: ${service.name}`)
+                        .setDescription(`The service **${service.name}** is now in MAINTENANCE (Connection Issue).`)
+                        .setColor('Orange')
+                        .setTimestamp();
+                } else if (status === 'ONLINE') {
+                    alertEmbed.setTitle(`🟢 Service Recovered: ${service.name}`)
+                        .setDescription(`The service **${service.name}** is back ONLINE.`)
+                        .setColor('Green')
+                        .setTimestamp();
+                }
+
+                if (alertEmbed.data.title) {
+                    try {
+                        await webhookClient.send({ embeds: [alertEmbed] });
+                    } catch (whError) {
+                        console.error("Failed to send webhook alert:", whError);
+                    }
+                }
+            }
+        }
+        previousStates[service.url] = status;
     }
 
     embed.setDescription(`Prochaine actualisation dans ${config.refreshInterval / 1000} secondes`);

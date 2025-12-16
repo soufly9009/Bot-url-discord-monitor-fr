@@ -20,5 +20,7 @@
       "url": "https://google.com"
     }
   ],
-  "embedURL": "https://google.com"
+  "embedURL": "https://uniobot.fr",
+  "webhookURL": "YOUR-WEBHOOK-URL-HERE",
+  "enableAlerts": true
 }
