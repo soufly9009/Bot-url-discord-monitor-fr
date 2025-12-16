@@ -1,6 +1,7 @@
-const axios = require("axios");
-const { Client, GatewayIntentBits, EmbedBuilder, WebhookClient } = require("discord.js");
+const { Client, GatewayIntentBits, EmbedBuilder } = require("discord.js");
 const config = require('./config.json');
+const { checkService } = require('./utils/checkService');
+const { sendAlert } = require('./utils/alertSystem');
 
 const client = new Client({
     intents: [
@@ -13,92 +14,69 @@ const client = new Client({
 
 client.once("ready", () => {
     console.log("Le bot est en ligne!");
-    setInterval(checkDomains, config.refreshInterval || 60000);
+    setInterval(updateStatus, config.refreshInterval || 60000);
 });
 
 let statusMessage;
 let previousStates = {};
 
-async function checkDomains() {
+async function updateStatus() {
     const embed = new EmbedBuilder()
         .setTitle("Statut des Infrastructures")
         .setColor(0x0099ff);
 
     for (const service of config.domaine) {
-        let status = 'ONLINE';
-        let statusText = '';
-        let latency = 0;
+        // 1. Check Status
+        // checkService returns { status, latency, message, code }
+        const result = await checkService(service.url);
 
-        try {
-            const start = Date.now();
-            const response = await axios.get(service.url);
-            latency = Date.now() - start;
-            statusText = `<a:ON:1444440953195728946> || En ligne - Ping: ${latency}ms`;
-            status = 'ONLINE';
-        } catch (error) {
-            statusText = `<:874346wrong:1450528836407136307> || Hors ligne - Error: ${error.message}`;
-            status = 'OFFLINE';
+        // 2. Build Embed Field
+        let icon = '';
+        let displayText = '';
 
-            if (error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED' || error.code === 'ETIMEDOUT') {
-                statusText = `🚧 || Maintenance`;
-                status = 'MAINTENANCE';
-            }
-
-            if (error.code === 'ENOTFOUND') {
-                console.error(`DNS Error: Could not resolve ${service.url}`);
-            } else {
-                console.error(`Error checking ${service.name} (${service.url}):`, error.message);
-            }
+        if (result.status === 'ONLINE') {
+            icon = '<a:ON:1444440953195728946>'; // Online animation
+            displayText = `${icon} || En ligne - Ping: ${result.latency}ms`;
+        } else if (result.status === 'MAINTENANCE') {
+            icon = '🚧'; // Maintenance icon
+            displayText = `${icon} || Maintenance`;
+        } else {
+            icon = '<:874346wrong:1450528836407136307>'; // Offline icon
+            displayText = `${icon} || Hors ligne - Error: ${result.message}`;
         }
 
         embed.addFields({
             name: service.name,
-            value: statusText,
+            value: displayText,
             inline: false,
         });
 
-        // Alert Logic
+        // 3. Log Errors
+        if (result.status === 'MAINTENANCE') {
+            console.error(`DNS/Connection Error for ${service.name}: Could not resolve/connect to ${service.url}`);
+        } else if (result.status === 'OFFLINE') {
+            console.error(`Error checking ${service.name} (${service.url}):`, result.message);
+        }
+
+        // 4. Send Alert if Status Changed
         if (config.enableAlerts && config.webhookURL) {
-            if (previousStates[service.url] && previousStates[service.url] !== status) {
-                const webhookClient = new WebhookClient({ url: config.webhookURL });
-
-                let alertEmbed = new EmbedBuilder();
-
-                if (status === 'OFFLINE') {
-                    alertEmbed.setTitle(`🔴 Service Down: ${service.name}`)
-                        .setDescription(`The service **${service.name}** is now OFFLINE.`)
-                        .setColor('Red')
-                        .setTimestamp();
-                } else if (status === 'MAINTENANCE') {
-                    alertEmbed.setTitle(`🚧 Service Maintenance: ${service.name}`)
-                        .setDescription(`The service **${service.name}** is now in MAINTENANCE (Connection Issue).`)
-                        .setColor('Orange')
-                        .setTimestamp();
-                } else if (status === 'ONLINE') {
-                    alertEmbed.setTitle(`🟢 Service Recovered: ${service.name}`)
-                        .setDescription(`The service **${service.name}** is back ONLINE.`)
-                        .setColor('Green')
-                        .setTimestamp();
-                }
-
-                if (alertEmbed.data.title) {
-                    try {
-                        await webhookClient.send({ embeds: [alertEmbed] });
-                    } catch (whError) {
-                        console.error("Failed to send webhook alert:", whError);
-                    }
-                }
+            const lastStatus = previousStates[service.url];
+            if (lastStatus && lastStatus !== result.status) {
+                // Status changed!
+                await sendAlert(config.webhookURL, service, result.status);
             }
         }
-        previousStates[service.url] = status;
+        previousStates[service.url] = result.status;
     }
 
+    // 5. Finalize Embed
     embed.setDescription(`Prochaine actualisation dans ${config.refreshInterval / 1000} secondes`);
     embed.setColor("Random");
     embed.setTimestamp();
     embed.setURL(config.embedURL || "");
     embed.setFooter({ text: "Statut des Domaines" });
 
+    // 6. Send/Edit Message
     try {
         const channel = await client.channels.fetch(config.channelID);
         if (channel) {
@@ -110,7 +88,7 @@ async function checkDomains() {
                     statusMessage = await channel.send({ embeds: [embed] });
                 }
             } else {
-                // Try to find the last message from the bot to edit it instead of sending a new one always
+                // Try to find the last message from the bot
                 const messages = await channel.messages.fetch({ limit: 10 });
                 const lastMessage = messages.find(m => m.author.id === client.user.id);
 
@@ -127,15 +105,13 @@ async function checkDomains() {
     }
 }
 
-// Anti-crash to prevent bot from dying on unhandled errors
+// Anti-crash
 process.on('unhandledRejection', error => {
     console.error('Unhandled promise rejection:', error);
 });
-
 process.on('uncaughtException', error => {
     console.error('Uncaught exception:', error);
 });
-
 client.on('error', error => {
     console.error('Discord Client Error:', error);
 });

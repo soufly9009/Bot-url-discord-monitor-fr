@@ -1,75 +1,82 @@
-# Infrastructure Bot Verification
+# 🤖 Infrastructure Status Bot
 
-Pour soutenir le projet merci de ⭐ le projet !
+![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)
+![Discord](https://img.shields.io/badge/Discord-JS-5865F2.svg)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
 
-## À quoi sert le bot ?
-- Le bot est un moniteur qui calcule la latence entre le nom de domaine et le serveur lui-même.
-- Le bot peut surveiller plusieurs URL en même temps et vous dire si elles sont en ligne ou hors ligne.
-- **Nouveau :** Affichage personnalisé ("Maintenance") si le site est inaccessible (DNS, Timeout, etc.).
-- **Nouveau :** Possibilité de donner un **Nom** personnalisé à chaque service (ex: "Site Web", "Panel").
+Un bot Discord professionnel pour surveiller l'état de vos sites, API, et serveurs en temps réel.
+Il met à jour automatiquement un message d'état et vous alerte en cas de panne.
 
-# Mise à jour à venir :
-- Protection & status des API
-- Annonce des down
-- Mise à jour sur demande...
-
-# LE SERVEUR DISCORD HÉBERGEUR : 
-[DISCORD](https://discord.gg/z3auwsQrUF)
-
-# Notre hébergeur gratuit
-[DISCORD support](https://discord.gg/emm9Ydegeq)
-[Site web](https://uniobot.fr/)
-
-Contact discord pseudo: `soufly_dev`
-
-Créé et mis à jour le 13/04/24 - Dernière mise à jour majeure le 16/12/25
+⭐ **Si vous aimez ce projet, laissez une étoile !**
 
 ---
 
-## Configuration
+## ✨ Fonctionnalités
 
-La configuration se passe dans le fichier `config.json`.
-Vous devez définir votre token, l'ID du salon, et la liste des domaines à surveiller.
+- **Surveillance en Temps Réel** : Vérifie vos services toutes les X secondes.
+- **Message d'État Dynamique** : Met à jour un embed unique (pas de spam).
+- **Détection Intelligente** : Distingue les pannes (OFFLINE) des maintenances/erreurs DNS (MAINTENANCE).
+- **Alertes Webhook** : Vous notifie immédiatement sur un canal privé si un service tombe.
+- **100% Configurable** : Noms personnalisés, icônes, délais, etc.
 
-**Exemple de `config.json` :**
+---
 
-```json
-{
-  "token": "VOTRE-TOKEN-ICI",
-  "channelID": "ID-DU-SALON",
-  "refreshInterval": 60000,
-  "domaine": [
-    { "name": "Site Web", "url": "https://votresite.fr" },
-    { "name": "Panel", "url": "https://panel.votresite.fr" },
-    { "name": "API", "url": "https://api.votresite.fr" }
-  ],
-  "embedURL": "https://votresite.fr"
-}
-```
+## 🚀 Installation
 
-### Champs :
-- `token` : Le token de votre bot Discord.
-- `channelID` : L'ID du salon où le message de statut sera envoyé/mis à jour.
-- `refreshInterval` : Temps en millisecondes entre chaque vérification (60000 = 1 minute).
-- `domaine` : Une liste d'objets, chacun contenant :
-    - `name` : Le nom affiché dans l'embed (ex: "Site Web").
-    - `url` : L'URL à vérifier.
-- `embedURL` : L'URL vers laquelle pointe le titre de l'embed.
+### Prérequis
+- [Node.js](https://nodejs.org/) (v16.9.0 ou plus récent)
+- Un Bot Discord et son Token.
 
-## Installation
+### Étapes
+1. **Cloner le projet**
+   ```bash
+   git clone https://github.com/soufly9009/Bot-url-discord-monitor-fr.git
+   cd Bot-url-discord-monitor-fr
+   ```
 
-1. Cloner le repo :
-```bash
-git clone https://github.com/mjumelmax001/statutsURLbotdiscord.git
-```
-2. Installer les dépendances :
-```bash
-npm install
-```
-3. Configurer `config.json`.
-4. Lancer le bot :
-```bash
-node .
-```
+2. **Installer les dépendances**
+   ```bash
+   npm install
+   ```
 
-Le code est open source mais il est protégé par une LICENSE.
+3. **Configurer**
+   Ouvrez le fichier `config.json` et remplissez vos informations :
+   ```json
+   {
+     "token": "VOTRE_TOKEN_DISCORD",
+     "channelID": "ID_DU_SALON_STATUT",
+     "webhookURL": "VOTRE_URL_WEBHOOK_POUR_ALERTES",
+     "refreshInterval": 60000,
+     "enableAlerts": true,
+     "domaine": [
+       { "name": "Site Web", "url": "https://votresite.com" },
+       { "name": "API", "url": "https://api.votresite.com" }
+     ],
+     "embedURL": "https://votresite.com"
+   }
+   ```
+
+4. **Lancer le bot**
+   ```bash
+   node .
+   ```
+
+---
+
+## 🛠️ Structure du Projet
+
+- `index.js` : Point d'entrée principal. Gère le cycle de vie du bot et l'affichage.
+- `utils/checkService.js` : Module de vérification de staut (Latence, Code HTTP).
+- `utils/alertSystem.js` : Module de gestion des alertes via Webhook.
+
+---
+
+## 🤝 Support & Crédits
+
+- **Développeur** : `soufly_dev`
+- **Serveur Support** : [Rejoindre le Discord](https://discord.gg/z3auwsQrUF)
+- **Hébergeur Partenaire** : [UnioBot](https://uniobot.fr/)
+
+---
+
+*Créé avec ❤️ pour la communauté.*
