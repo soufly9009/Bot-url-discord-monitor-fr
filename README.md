@@ -13,10 +13,10 @@ Pour soutenir le projet merci de ⭐ le projet !
 
 # LE SERVEUR DISCORD HEBERGEUR : 
 
-[DISCORD](https://discord.gg/z3auwsQrUF)
+
 
 # notre hebergeur gratuit
-[DISCORD support]([https://discord.gg/4teNzBabQz](https://discord.gg/emm9Ydegeq))
+[DISCORD support](https://discord.gg/AGp9UfmSQE)
 [site web](https://uniobot.fr/)
 
 
@@ -48,9 +48,10 @@ voici la ligne a modifié est à config
 ```
 lien clone git
 ```
-https://github.com/mjumelmax001/statutsURLbotdiscord.git
+https://github.com/soufly9009/Bot-url-discord-monitor-fr
 ```
 
 Le code est en open source mais il est proteger par une LICENSE
+
 
 
