@@ -80,3 +80,4 @@ Il met à jour automatiquement un message d'état et vous alerte en cas de panne
 ---
 
 *Créé avec ❤️ pour la communauté.*
+
